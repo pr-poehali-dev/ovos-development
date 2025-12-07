@@ -33,11 +33,34 @@ const Payment = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handlePaymentConfirm = () => {
-    toast.success('Заявка отправлена администратору на проверку');
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
+  const handlePaymentConfirm = async () => {
+    if (!request) return;
+    
+    try {
+      const response = await fetch('https://functions.poehali.dev/6b9d0b26-9bb4-4506-9276-c04e97feeea5', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'create_request',
+          nickname: request.nickname,
+          amount: request.amount,
+          timestamp: request.timestamp
+        })
+      });
+      
+      if (response.ok) {
+        toast.success('Заявка отправлена администратору на проверку');
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        toast.error('Ошибка отправки заявки');
+      }
+    } catch (error) {
+      toast.error('Ошибка соединения');
+    }
   };
 
   if (!request) {
@@ -103,39 +126,7 @@ const Payment = () => {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-muted-foreground mb-1">
-                        Получатель
-                      </p>
-                      <p className="text-lg font-semibold">
-                        ИВАН И.
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="bg-white rounded-lg p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-muted-foreground mb-1">
-                        Номер телефона (СБП)
-                      </p>
-                      <p className="text-lg font-mono font-semibold">
-                        +7 900 123-45-67
-                      </p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleCopy('+79001234567')}
-                      className="shrink-0"
-                    >
-                      <Icon name={copied ? "Check" : "Copy"} size={16} />
-                    </Button>
-                  </div>
-                </div>
               </div>
             </div>
 

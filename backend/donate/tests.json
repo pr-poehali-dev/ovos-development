@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Create donate request",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "action": "create_request",
+        "nickname": "TestPlayer",
+        "amount": 100,
+        "timestamp": 1234567890
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
